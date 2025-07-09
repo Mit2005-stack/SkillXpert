@@ -15,11 +15,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { useRegisterUserMutation, useLoginUserMutation } from "@/features/api/authApi"
-import { Loader, Loader2 } from "lucide-react"
-
+import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
 const Login = () => {
   const [signupInput, setSignupInput] = useState({ name: "", email: "", password: "" });
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
@@ -60,12 +60,34 @@ const Login = () => {
     await action(inputData);
   }
 
+  useEffect(() => {
+    if(registerIsSuccess&& registerData) {
+      toast.success(registerData.message || "Registration successful!");
+  }
+  if(registerError) {
+      toast.error(registerError.data.message || "Registration failed!");
+  }
+  if(loginIsSuccess && loginData) {
+      toast.success(loginData.message || "Login successful!");
+  }
+  if(loginError) {
+      toast.error(loginError.data.message || "Login failed!");
+  }
+}, [loginIsLoading, 
+    registerIsLoading,
+    loginData,
+    registerData,
+    loginError,
+    registerError,
+    ]);
+
+
   return (
-    <div className="flex w-full justify-center items-center">
-      <Tabs defaultValue="account">
-        <TabsList>
-          <TabsTrigger value="signup">Signup</TabsTrigger>
-          <TabsTrigger value="login">Login</TabsTrigger>
+    <div className="flex w-full justify-center items-center mt-20">
+      <Tabs defaultValue="signup" className="w-full max-w-sm ">
+        <TabsList className="w-full max-w-sm">
+          <TabsTrigger className="w-1/2" value="signup">Signup</TabsTrigger>
+          <TabsTrigger className="w-1/2" value="login">Login</TabsTrigger>
         </TabsList>
         <TabsContent value="signup">
           <Card>
