@@ -12,7 +12,9 @@ import { useTheme } from 'next-themes'
 
 
 const DarkMode = () => {
+
     const { setTheme } = useTheme()
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

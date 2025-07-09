@@ -7,15 +7,10 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
- import {
+import {
   Avatar,
   AvatarFallback,
   AvatarImage,
@@ -30,22 +25,17 @@ const Navbar = () => {
           <School size={"30"} />
           <h1 className="hidden md:block font-extrabold text-2xl">BrightPath</h1>
         </div>
-        <div>
+        <div className='flex items-center gap-5'>
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-              <Avatar>
-          <AvatarImage
-            src="https://github.com/evilrabbit.png"
-            alt="@evilrabbit"
-          />
-          <AvatarFallback>ER</AvatarFallback>
-        </Avatar>
-
-
-  
-
-
+                <Avatar>
+                  <AvatarImage
+                    src="https://github.com/evilrabbit.png"
+                    alt="@evilrabbit"
+                  />
+                  <AvatarFallback>ER</AvatarFallback>
+                </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="start">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -72,7 +62,7 @@ const Navbar = () => {
               <Button>Signup</Button>
             </div>
           )}
-          <DarkMode/>
+          <DarkMode />
         </div>
       </div>
     </div>
