@@ -20,6 +20,7 @@ import React, { useEffect, useState } from "react"
 import { useRegisterUserMutation, useLoginUserMutation } from "@/features/api/authApi"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import { useNavigate } from "react-router-dom"
 const Login = () => {
   const [signupInput, setSignupInput] = useState({ name: "", email: "", password: "" });
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
