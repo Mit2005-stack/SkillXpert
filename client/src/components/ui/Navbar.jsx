@@ -28,7 +28,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { Separator } from '@radix-ui/react-dropdown-menu'
+
+import { Link } from 'react-router-dom'
 
 
 const Navbar = () => {
@@ -56,15 +57,9 @@ const Navbar = () => {
               <DropdownMenuContent className="w-56" align="start">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    My Learning
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    Edit Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    Log out
-                  </DropdownMenuItem>
+                  <DropdownMenuItem><Link to="my-learning">My Learning</Link></DropdownMenuItem>
+                  <DropdownMenuItem><Link to="profile">Edit Profile</Link></DropdownMenuItem>
+                  <DropdownMenuItem>Log out</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator></DropdownMenuSeparator>
                 <DropdownMenuItem>
@@ -106,8 +101,8 @@ export function MobilNavbar() {
         </SheetHeader>
    
         <nav className='flex flex-col space-y-4 ml-4 w-10/12'>
-          <span className="">My Learning</span>
-          <span className="">Edit Profile</span>
+          <span className=""><Link to="my-learning">My Learning</Link></span>
+          <span className=""><Link to="profile">Edit Profile</Link></span>
           <span className="">Log out</span>
         {
           role==="instructor" &&(
