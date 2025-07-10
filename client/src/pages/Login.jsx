@@ -42,6 +42,7 @@ const Login = () => {
     }
   ] = useLoginUserMutation();
 
+  const navigate = useNavigate();
 
   const changeInputHandler = (e, type) => {
     const { name, value } = e.target;
@@ -62,13 +63,17 @@ const Login = () => {
 
   useEffect(() => {
     if(registerIsSuccess&& registerData) {
-      toast.success(registerData.message || "Registration successful!");
+    {  toast.success(registerData.message || "Registration successful!");
+      navigate("/");
+    }
   }
   if(registerError) {
       toast.error(registerError.data.message || "Registration failed!");
   }
   if(loginIsSuccess && loginData) {
-      toast.success(loginData.message || "Login successful!");
+    {  toast.success(loginData.message || "Login successful!");
+        navigate("/");
+    }
   }
   if(loginError) {
       toast.error(loginError.data.message || "Login failed!");

@@ -13,6 +13,7 @@ const HeroSection = () => {
                 action="">
                     <Input
                         type="text"
+                        placeholder="Search for courses, topics, or instructors"
                         className="flex-row border-none focus-visible:ring-0 px-6 py-3 text-gray-100 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 w-full"
                     ></Input>
                     <Button className="bg-blue-600 dark:bg-gray-800 text-white px-6 py-3 rounded-r-full hover:bg-blue-700 dark:hover:bg-blue-800">Search</Button>
