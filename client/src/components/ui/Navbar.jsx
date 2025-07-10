@@ -1,5 +1,5 @@
 import React from 'react'
-import { School } from 'lucide-react'
+import { MenuIcon, School } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -16,10 +16,26 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 import DarkMode from '@/DarkMode'
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Separator } from '@radix-ui/react-dropdown-menu'
+
+
 const Navbar = () => {
   const user = true;
   return (
     <div className='h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10'>
+      {/* Desktop */}
       <div className="max-w-7xl mx-auto hidden md:flex items-center justify-between h-full gap-10 px-4">
         <div className='flex items-center gap-2'>
           <School size={"30"} />
@@ -65,7 +81,43 @@ const Navbar = () => {
           <DarkMode />
         </div>
       </div>
+
+      {/* Mobile */}
+      <div className="md:hidden flex items-center justify-between h-full px-4">
+      <h1 className='font-extrabold text-2xl'>BrightPath</h1>
+      <MobilNavbar/>
+      </div>
     </div>
+  )
+}
+
+export function MobilNavbar() {
+  const role = "instructor";
+
+  return (
+    <Sheet className="">
+      <SheetTrigger asChild>
+        <Button size="icon" className="rounded-full bg-gray-200 hover:bg-gray-200" variant="outline"><MenuIcon/></Button>
+      </SheetTrigger>
+      <SheetContent className="flex flex-col w-2/3">
+        <SheetHeader className="flex flex-row justify-between mt-10">
+          <SheetTitle>BrigthPath</SheetTitle>
+          <DarkMode />
+        </SheetHeader>
+   
+        <nav className='flex flex-col space-y-4 ml-4 w-10/12'>
+          <span className="">My Learning</span>
+          <span className="">Edit Profile</span>
+          <span className="">Log out</span>
+        {
+          role==="instructor" &&(
+
+            <Button type="submit" className="">Dashboard</Button>
+          )
+        }
+        </nav>
+      </SheetContent>
+    </Sheet>
   )
 }
 
