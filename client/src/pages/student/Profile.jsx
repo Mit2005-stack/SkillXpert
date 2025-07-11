@@ -25,7 +25,7 @@ const Profile = () => {
   
 
     const updateUserHandler=async()=>{
-        // console.log(name,profilePhoto);
+        console.log(name,profilePhoto);
         const formData = new FormData();
         formData.append("name",name);
         formData.append("profilePhoto",profilePhoto);
@@ -45,10 +45,10 @@ const Profile = () => {
     },[data,error,isSuccess,isError])
 
     if(isLoading) return <h1>Profile Loading...</h1>
-
+    
     const { user } = data;
     // const isLoading = true;
-    const enrolledCourses = [1, 2];
+    // const enrolledCourses = [1, 2];
 
 
     return (
