@@ -1,12 +1,18 @@
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
 import { DialogTitle } from '@radix-ui/react-dialog'
+import { Loader2 } from 'lucide-react'
 import React from 'react'
+import Course from './Course'
 
 const Profile = () => {
+    const isLoading = true;
+    const enrolledCourses = [1,2];
+
+
   return (
     <div className='max-w-4xl mx-auto px-4 my-24'>
         <h1 className='font-bold text-2xl text-center md:text-left'>Profile</h1>
@@ -60,8 +66,37 @@ const Profile = () => {
                                 <Input type="file" accept="image/*" className="col-span-3"/>
                             </div>
                         </div>
+                        <DialogFooter>
+                            <Button disabled={isLoading} >           
+                            {
+                                isLoading ? (
+                                    <>
+                                    <Loader2 className='mr-2 h-4 w-4 animate-spin'/> Please wait
+                                    </>
+                                ) : (
+                                    "Save Changes"
+                                )
+                            }
+                            </Button>
+                        </DialogFooter>
                     </DialogContent>
                 </Dialog>
+            </div>
+        </div>
+        
+        <div className='mt-10'>
+            <h1 className='font-medium text-lg'>Courses you're enrolled in</h1>
+            <div className='grid grid-cols-1 sm:grid-colls-2 md:grid-cols-3 gap-4 my-5'>
+                {
+                    enrolledCourses.length === 0?
+                    (
+                        <h1>You haven't enrolled yet</h1>
+                    )
+                    :
+                    (
+                        enrolledCourses.map((course, index) =><Course key={index}/> )
+                    )
+                }
             </div>
         </div>
     </div>
