@@ -80,3 +80,26 @@ export const login = async (req, res) => {
         message: "Failed to login" });
   }
 }
+
+export const logout = async (req, res) => {
+  try {
+    return res.status(200).cookie("token", "", {maxAge:0}).json({
+      success: true,
+      message: "Logout successful"
+    });
+  } catch (error) {
+    res.status(500).json({ 
+        success: false,
+        message: "Failed to logout" });
+  }
+}
+
+export const getUserProfile = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    res.status(500).json({ 
+        success: false,
+        message: "Failed to load user" });
+  }
+}
