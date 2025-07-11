@@ -11,41 +11,41 @@ import { useLoadUserQuery, useUpdateUserMutation } from '@/features/api/authApi'
 import { toast } from 'sonner'
 
 const Profile = () => {
-    const [name,setName] = useState("");
-    const [profilePhoto,setProfilePhoto] = useState("");
+    const [name, setName] = useState("");
+    const [profilePhoto, setProfilePhoto] = useState("");
 
-    const onChangeHandler=(e)=>{
-        const file = e.target.file?.[0];
-        if(file) setProfilePhoto(file);
+    const onChangeHandler = (e) => {
+        const file = e.target.files?.[0];
+        if (file) setProfilePhoto(file);
     }
     const { data, isLoading } = useLoadUserQuery();
     // console.log(data);
-    const[updateUser,{data:updateUserData,isLoading:updateUserIsLoading,isError, error,isSuccess}] =  useUpdateUserMutation();
+    const [updateUser, { data: updateUserData, isLoading: updateUserIsLoading, isError, error, isSuccess }] = useUpdateUserMutation();
 
-  
 
-    const updateUserHandler=async()=>{
-        console.log(name,profilePhoto);
+
+    const updateUserHandler = async () => {
+        console.log(name, profilePhoto);
         const formData = new FormData();
-        formData.append("name",name);
-        formData.append("profilePhoto",profilePhoto);
+        formData.append("name", name);
+        formData.append("profilePhoto", profilePhoto);
         await updateUser(formData);
 
     }
 
-    useEffect(()=>{
-        if(isSuccess){
+    useEffect(() => {
+        if (isSuccess) {
             toast.success(data.messaage || "Profile updated")
         }
 
-        if(isError){
-            toast.error(error.messaage||"Failed to update profile")
+        if (isError) {
+            toast.error(error.messaage || "Failed to update profile")
         }
 
-    },[data,error,isSuccess,isError])
+    }, [data, error, isSuccess, isError])
 
-    if(isLoading) return <h1>Profile Loading...</h1>
-    
+    if (isLoading) return <h1>Profile Loading...</h1>
+
     const { user } = data;
     // const isLoading = true;
     // const enrolledCourses = [1, 2];
@@ -56,10 +56,10 @@ const Profile = () => {
             <h1 className='font-bold text-2xl text-center md:text-left'>Profile</h1>
             <div className='flex flex-col md:flex-row items-center md:items-start gap-8 mt-6'>
                 <div className='flex flex-col items-center'>
-                        <Avatar className='w-24 h-24 md:w-32 md:h-32 mb-4'>
-                            <AvatarImage src={user.photoURL||"https://github.com/shadcn.png"} />
-                            <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
+                    <Avatar className='w-24 h-24 md:w-32 md:h-32 mb-4'>
+                        <AvatarImage src={user.photoURL || "https://github.com/shadcn.png"} />
+                        <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
                 </div>
                 <div>
                     <div className='mb-2'>
@@ -94,26 +94,26 @@ const Profile = () => {
                             <div className='grid gap-4 py-4'>
                                 <div className='grid grid-cols-4 item-centre gap-4'>
                                     <Label>Name</Label>
-                                    <Input 
-                                    type="text" 
-                                    value={name}
-                                    onChange={(e)=>setName(e.target.value)} 
-                                    placeholder="Name" 
-                                    className="col-span-3" />
+                                    <Input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="Name"
+                                        className="col-span-3" />
                                 </div>
                                 <div className='grid grid-cols-4 item-centre gap-4'>
                                     <Label>Profile Photo</Label>
-                                    <Input 
-                                    onChange={onChangeHandler}
-                                    type="file" 
-                                    accept="image/*" 
-                                    className="col-span-3" />
+                                    <Input
+                                        onChange={onChangeHandler}
+                                        type="file"
+                                        accept="image/*"
+                                        className="col-span-3" />
                                 </div>
                             </div>
                             <DialogFooter>
-                                <Button 
-                                onClick={updateUserHandler}
-                                disabled={isLoading}>
+                                <Button
+                                    onClick={updateUserHandler}
+                                    disabled={isLoading}>
                                     {
                                         isLoading ? (
                                             <>
