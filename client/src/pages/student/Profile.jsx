@@ -5,24 +5,48 @@ import { Label } from '@/components/ui/label'
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
 import { DialogTitle } from '@radix-ui/react-dialog'
 import { Loader2 } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Course from './Course'
-import { useLoadUserQuery } from '@/features/api/authApi'
+import { useLoadUserQuery, useUpdateUserMutation } from '@/features/api/authApi'
+import { toast } from 'sonner'
 
 const Profile = () => {
     const [name,setName] = useState("");
+    const [profilePhoto,setProfilePhoto] = useState("");
+
+    const onChangeHandler=(e)=>{
+        const file = e.target.file?.[0];
+        if(file) setProfilePhoto(file);
+    }
     const { data, isLoading } = useLoadUserQuery();
     // console.log(data);
-    const[updateUser,{data:updateUserData,isLoading:updateUserIsLoading, error}] =  useUpdateUserMutation();
+    const[updateUser,{data:updateUserData,isLoading:updateUserIsLoading,isError, error,isSuccess}] =  useUpdateUserMutation();
 
-    if (isLoading)
-        return <h1>Profile Loading... </h1>
+  
 
-    const { user } = data;
-
-    const updateUserHandler=()=>{
+    const updateUserHandler=async()=>{
+        // console.log(name,profilePhoto);
+        const formData = new FormData();
+        formData.append("name",name);
+        formData.append("profilePhoto",profilePhoto);
+        await updateUser(formData);
 
     }
+
+    useEffect(()=>{
+        if(isSuccess){
+            toast.success(data.messaage || "Profile updated")
+        }
+
+        if(isError){
+            toast.error(error.messaage||"Failed to update profile")
+        }
+
+    },[data,error,isSuccess,isError])
+
+    if(isLoading) return <h1>Profile Loading...</h1>
+
+    const { user } = data;
     // const isLoading = true;
     const enrolledCourses = [1, 2];
 
@@ -70,11 +94,20 @@ const Profile = () => {
                             <div className='grid gap-4 py-4'>
                                 <div className='grid grid-cols-4 item-centre gap-4'>
                                     <Label>Name</Label>
-                                    <Input type="text" placeholder="Name" className="col-span-3" />
+                                    <Input 
+                                    type="text" 
+                                    value={name}
+                                    onChange={(e)=>setName(e.target.value)} 
+                                    placeholder="Name" 
+                                    className="col-span-3" />
                                 </div>
                                 <div className='grid grid-cols-4 item-centre gap-4'>
                                     <Label>Profile Photo</Label>
-                                    <Input type="file" accept="image/*" className="col-span-3" />
+                                    <Input 
+                                    onChange={onChangeHandler}
+                                    type="file" 
+                                    accept="image/*" 
+                                    className="col-span-3" />
                                 </div>
                             </div>
                             <DialogFooter>

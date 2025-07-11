@@ -7,6 +7,6 @@ router.route('/register').post(register);
 router.route('/login').post(login);
 router.route('/logout').get(logout);
 router.route('/profile').get(isAuthenticated, getUserProfile)
-router.route("/profile/update").put(isAuthenticated,updateUserProfile)
+router.route("/profile/update").put(isAuthenticated,upload.single("profilePhoto"),updateUserProfile)
 
 export default router;
