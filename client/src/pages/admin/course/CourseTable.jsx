@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -62,9 +63,10 @@ const invoices = [
 
 
 const CourseTable = () => {
+   const navigate = useNavigate();
   return (
     <div>
-      <Button>Create a new course</Button>
+      <Button onClick={() => navigate("create")}>Create a new course</Button>
 
       <Table>
         <TableCaption>A list of your recent invoices.</TableCaption>

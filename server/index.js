@@ -4,6 +4,7 @@ import userRoute from './route/user.route.js';
 import cookieParser from 'cookie-parser';
 import connectDB from './database/db.js';
 import cors from 'cors';
+import courseRoute from './route/course.route.js';
 
 dotenv.config({});
 
@@ -22,6 +23,7 @@ app.use(cors({
 
 //apis
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/course", courseRoute);
 
 app.get("/home", (_, res) => {
   res.status(200).json({

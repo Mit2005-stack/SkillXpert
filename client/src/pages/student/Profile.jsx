@@ -18,14 +18,14 @@ const Profile = () => {
         const file = e.target.files?.[0];
         if (file) setProfilePhoto(file);
     }
-    const { data, isLoading } = useLoadUserQuery();
+    const { data, isLoading, refetch } = useLoadUserQuery();
     // console.log(data);
     const [updateUser, { data: updateUserData, isLoading: updateUserIsLoading, isError, error, isSuccess }] = useUpdateUserMutation();
 
 
 
     const updateUserHandler = async () => {
-        console.log(name, profilePhoto);
+        // console.log(name, profilePhoto);
         const formData = new FormData();
         formData.append("name", name);
         formData.append("profilePhoto", profilePhoto);
@@ -34,7 +34,13 @@ const Profile = () => {
     }
 
     useEffect(() => {
+        refetch();
+    },[])
+     
+
+    useEffect(() => {
         if (isSuccess) {
+            refetch();
             toast.success(data.messaage || "Profile updated")
         }
 
@@ -42,11 +48,11 @@ const Profile = () => {
             toast.error(error.messaage || "Failed to update profile")
         }
 
-    }, [data, error, isSuccess, isError])
+    }, [ error,updateUserData, isSuccess, isError])
 
     if (isLoading) return <h1>Profile Loading...</h1>
-
-    const { user } = data;
+    
+    const  user  = data && data.user;
     // const isLoading = true;
     // const enrolledCourses = [1, 2];
 
@@ -113,9 +119,9 @@ const Profile = () => {
                             <DialogFooter>
                                 <Button
                                     onClick={updateUserHandler}
-                                    disabled={isLoading}>
+                                    disabled={updateUserIsLoading}>
                                     {
-                                        isLoading ? (
+                                        updateUserIsLoading ? (
                                             <>
                                                 <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait
                                             </>

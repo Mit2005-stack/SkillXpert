@@ -1,5 +1,5 @@
-import React from 'react'
-import { MenuIcon, School } from 'lucide-react'
+import React, { useEffect } from 'react'
+import { MenuIcon, School, Store } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -29,11 +29,31 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { userLoggedOut } from '@/features/authslice'
+import { useLogoutUserMutation } from '@/features/api/authApi'
+import { toast } from 'sonner'
+import { useSelector } from 'react-redux'
+
+
 
 
 const Navbar = () => {
-  const user = true;
+  const { user } = useSelector(store => store.auth);
+  const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
+  const navigate = useNavigate();
+
+  const logoutHandler = async () => {
+    await logoutUser();
+  };
+  console.log(user);
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || "User log out.")
+      navigate("/login");
+    }
+  }, [isSuccess])
   return (
     <div className='h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10'>
       {/* Desktop */}
@@ -48,7 +68,7 @@ const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <Avatar>
                   <AvatarImage
-                    src="https://github.com/evilrabbit.png"
+                    src={user?.photoURL || "https://github.com/evilrabbit.png"}
                     alt="@evilrabbit"
                   />
                   <AvatarFallback>ER</AvatarFallback>
@@ -59,18 +79,25 @@ const Navbar = () => {
                 <DropdownMenuGroup>
                   <DropdownMenuItem><Link to="my-learning">My Learning</Link></DropdownMenuItem>
                   <DropdownMenuItem><Link to="profile">Edit Profile</Link></DropdownMenuItem>
-                  <DropdownMenuItem>Log out</DropdownMenuItem>
+                  <DropdownMenuItem onClick={logoutHandler}>Log out</DropdownMenuItem>
                 </DropdownMenuGroup>
-                <DropdownMenuSeparator></DropdownMenuSeparator>
+                {
+                  user.role === "instructor" && (
+                   <>
+                   <DropdownMenuSeparator/>
                 <DropdownMenuItem>
                   Dashboard
                 </DropdownMenuItem>
+                   </> 
+                  )
+                }
+
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <div className='flex items-center gap-2'>
-              <Button variant="outline">Login</Button>
-              <Button>Signup</Button>
+              <Button variant="outline" onClick={() => navigate("/login")}>Login</Button>
+              <Button onClick={() => navigate("/login")}>Signup</Button>
             </div>
           )}
           <DarkMode />
@@ -79,8 +106,8 @@ const Navbar = () => {
 
       {/* Mobile */}
       <div className="md:hidden flex items-center justify-between h-full px-4">
-      <h1 className='font-extrabold text-2xl'>BrightPath</h1>
-      <MobilNavbar/>
+        <h1 className='font-extrabold text-2xl'>BrightPath</h1>
+        <MobilNavbar />
       </div>
     </div>
   )
@@ -92,24 +119,24 @@ export function MobilNavbar() {
   return (
     <Sheet className="">
       <SheetTrigger asChild>
-        <Button size="icon" className="rounded-full bg-gray-200 hover:bg-gray-200" variant="outline"><MenuIcon/></Button>
+        <Button size="icon" className="rounded-full bg-gray-200 hover:bg-gray-200" variant="outline"><MenuIcon /></Button>
       </SheetTrigger>
       <SheetContent className="flex flex-col w-2/3">
         <SheetHeader className="flex flex-row justify-between mt-10">
           <SheetTitle>BrigthPath</SheetTitle>
           <DarkMode />
         </SheetHeader>
-   
+
         <nav className='flex flex-col space-y-4 ml-4 w-10/12'>
           <span className=""><Link to="my-learning">My Learning</Link></span>
           <span className=""><Link to="profile">Edit Profile</Link></span>
           <span className="">Log out</span>
-        {
-          role==="instructor" &&(
+          {
+            role === "instructor" && (
 
-            <Button type="submit" className="">Dashboard</Button>
-          )
-        }
+              <Button type="submit" className="">Dashboard</Button>
+            )
+          }
         </nav>
       </SheetContent>
     </Sheet>
