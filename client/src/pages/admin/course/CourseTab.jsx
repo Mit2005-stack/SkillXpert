@@ -12,9 +12,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEditCourseMutation, useGetCourseByIdQuery } from '@/features/api/courseApi';
+import { toast } from 'sonner';
 
 const CourseTab = () => {
     const [input, setInput] = useState({
@@ -26,33 +28,71 @@ const CourseTab = () => {
         coursePrice: "",
         courseThumbnail: ""
     });
+    const params = useParams();
+    const courseId = params.courseId;
+    const {data: courseByIdData,isLoading:courseByIdLoading} = useGetCourseByIdQuery(courseId);
+    const course = courseByIdData?.course;
+    useEffect(() => {
+        if (course) {
+            setInput({
+                courseTitle: course.courseTitle,
+                subTitle: course.subTitle,
+                description: course.description,
+                category: course.category,
+                courseLevel: course.courseLevel,
+                coursePrice: course.coursePrice,
+                courseThumbnail: "",
+            });
+        }
+    }, [course]);
+
     const [previewThumbnail, setPreviewThumbnail] = useState("")
     const changeEventHandler = (e) => {
         const { name, value } = e.target;
         setInput({ ...input, [name]: value });
     }
     const selectCategory = (value) => {
-        setInput({...input, category:value})
+        setInput({ ...input, category: value })
     }
     const selectCourseLevel = (value) => {
-        setInput({...input, courseLevel:value})
+        setInput({ ...input, courseLevel: value })
     }
 
-    const selectThumbnail = (e) =>{
+    const selectThumbnail = (e) => {
         const file = e.target.files?.[0]
-        if(file){
-            setInput({...input, courseThumbnail:file});
+        if (file) {
+            setInput({ ...input, courseThumbnail: file });
             const fileReader = new FileReader();
             fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
             fileReader.readAsDataURL(file);
         }
     }
-    const navigate= useNavigate();
+    const navigate = useNavigate();
+    
+    const [editCourse, { data, isLoading, isSuccess, error }] = useEditCourseMutation();
     const isPublished = true;
-    const isLoading = false;
-    const updateCourseHandler =() =>{
-        console.log(input);
+    // const isLoading = false;
+    const updateCourseHandler = async () => {
+        // console.log(input);
+        const formData = new FormData();
+        formData.append("courseTitle", input.courseTitle);
+        formData.append("subTitle", input.subTitle);
+        formData.append("description", input.description);
+        formData.append("category", input.category);
+        formData.append("courseLevel", input.courseLevel);
+        formData.append("coursePrice", input.coursePrice);
+        formData.append("courseThumbnail", input.courseThumbnail);
+        await editCourse({formData, courseId});
     }
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success(data.message || "Course updated successfully");
+        }
+        if (error) {
+            toast.error(error.data.message || "Failed to update course");
+        }
+    }, [isSuccess, error]);
+
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between">
@@ -136,7 +176,7 @@ const CourseTab = () => {
                         </div>
                         <div className=''>
                             <Label>Course Level</Label>
-                            
+
                             <Select onValueChange={selectCourseLevel}>
                                 <SelectTrigger className="w-[180px] mt-1">
                                     <SelectValue placeholder="Select a Course Level" />
@@ -164,7 +204,7 @@ const CourseTab = () => {
                             />
                         </div>
                     </div>
-                     <div>
+                    <div>
                         <Label>
                             Course Thumbnail
                         </Label>
@@ -173,24 +213,24 @@ const CourseTab = () => {
                             accept="image/*"
                             className="w-fit"
                             type="file" />{
-                                previewThumbnail && (
-                                    <img src={previewThumbnail} className="w-64 my-2" alt="Course Thumbnail"/>
-                                )
-                            }
+                            previewThumbnail && (
+                                <img src={previewThumbnail} className="w-64 my-2" alt="Course Thumbnail" />
+                            )
+                        }
                     </div>
                     <div>
-                        <Button variant="outline" onClick={()=>navigate("/admin/course")}>Cancel</Button>
+                        <Button variant="outline" onClick={() => navigate("/admin/course")}>Cancel</Button>
                         <Button disabled={isLoading} onClick={updateCourseHandler}>
                             {
-                                isLoading?(
+                                isLoading ? (
                                     <>
-                                    <Loader2 className='mr-2 h-4 w-4 animate-spin'/> Please wait...
+                                        <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait...
                                     </>
-                                ):(
+                                ) : (
                                     "Save"
                                 )
                             }
-                        </Button> 
+                        </Button>
                     </div>
 
                 </div>
