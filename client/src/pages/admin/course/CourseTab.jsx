@@ -26,13 +26,33 @@ const CourseTab = () => {
         coursePrice: "",
         courseThumbnail: ""
     });
+    const [previewThumbnail, setPreviewThumbnail] = useState("")
     const changeEventHandler = (e) => {
         const { name, value } = e.target;
         setInput({ ...input, [name]: value });
     }
+    const selectCategory = (value) => {
+        setInput({...input, category:value})
+    }
+    const selectCourseLevel = (value) => {
+        setInput({...input, courseLevel:value})
+    }
+
+    const selectThumbnail = (e) =>{
+        const file = e.target.files?.[0]
+        if(file){
+            setInput({...input, courseThumbnail:file});
+            const fileReader = new FileReader();
+            fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
+            fileReader.readAsDataURL(file);
+        }
+    }
     const navigate= useNavigate();
     const isPublished = true;
     const isLoading = false;
+    const updateCourseHandler =() =>{
+        console.log(input);
+    }
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between">
@@ -84,7 +104,7 @@ const CourseTab = () => {
                     <div className='flex items-center gap-5'>
                         <div className=''>
                             <Label>Category</Label>
-                            <Select>
+                            <Select onValueChange={selectCategory}>
                                 <SelectTrigger className="w-[180px] mt-1">
                                     <SelectValue placeholder="Select a category" />
                                 </SelectTrigger>
@@ -116,7 +136,8 @@ const CourseTab = () => {
                         </div>
                         <div className=''>
                             <Label>Course Level</Label>
-                            <Select>
+                            
+                            <Select onValueChange={selectCourseLevel}>
                                 <SelectTrigger className="w-[180px] mt-1">
                                     <SelectValue placeholder="Select a Course Level" />
                                 </SelectTrigger>
@@ -148,13 +169,18 @@ const CourseTab = () => {
                             Course Thumbnail
                         </Label>
                         <Input
+                            onChange={selectThumbnail}
                             accept="image/*"
                             className="w-fit"
-                            type="file" />
+                            type="file" />{
+                                previewThumbnail && (
+                                    <img src={previewThumbnail} className="w-64 my-2" alt="Course Thumbnail"/>
+                                )
+                            }
                     </div>
                     <div>
                         <Button variant="outline" onClick={()=>navigate("/admin/course")}>Cancel</Button>
-                        <Button disabled={isLoading}>
+                        <Button disabled={isLoading} onClick={updateCourseHandler}>
                             {
                                 isLoading?(
                                     <>
