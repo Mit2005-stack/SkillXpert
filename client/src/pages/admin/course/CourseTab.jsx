@@ -18,6 +18,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEditCourseMutation, useGetCourseByIdQuery } from '@/features/api/courseApi';
 import { toast } from 'sonner';
 
+
 const CourseTab = () => {
     const [input, setInput] = useState({
         courseTitle: "",
@@ -32,6 +33,7 @@ const CourseTab = () => {
     const courseId = params.courseId;
     const {data: courseByIdData,isLoading:courseByIdLoading} = useGetCourseByIdQuery(courseId);
     const course = courseByIdData?.course;
+  
     useEffect(() => {
         if (course) {
             setInput({
@@ -47,6 +49,7 @@ const CourseTab = () => {
     }, [course]);
 
     const [previewThumbnail, setPreviewThumbnail] = useState("")
+    
     const changeEventHandler = (e) => {
         const { name, value } = e.target;
         setInput({ ...input, [name]: value });
