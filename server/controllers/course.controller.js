@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Course } from "../model/course.model.js";
 import { Lecture } from "../model/lecture.model.js";
 import {deleteMediaFromCloudinary, uploadMedia} from "../utils/cloudinary.js";
@@ -125,5 +126,25 @@ export const createLecture = async(req,res)=>{
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Failed to create lecture" });
+    }
+}
+export const getCourseLecture = async (req, res) => {
+    try {
+        const { courseId } = req.params;
+        if (!courseId || !mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({ message: "Invalid courseId" });
+        }
+        const course = await Course.findById(courseId).populate("lectures");
+        if (!course) {
+            return res.status(404).json({
+                message: "Course not found"
+            });
+        }
+        return res.status(200).json({
+            lectures: course.lectures
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Failed to get lecture" });
     }
 }
