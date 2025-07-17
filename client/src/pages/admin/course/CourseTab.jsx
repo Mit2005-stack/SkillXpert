@@ -31,11 +31,11 @@ const CourseTab = () => {
     });
     const params = useParams();
     const courseId = params.courseId;
-    const {data: courseByIdData,isLoading:courseByIdLoading} = useGetCourseByIdQuery(courseId);
-    const course = courseByIdData?.course;
-  
+    const {data: courseByIdData,isLoading:courseByIdLoading} = useGetCourseByIdQuery(courseId,{refetchOnMountOrArgChange:true});
+    
     useEffect(() => {
-        if (course) {
+        if (courseByIdData?.course) {
+            const course = courseByIdData?.course;
             setInput({
                 courseTitle: course.courseTitle,
                 subTitle: course.subTitle,
@@ -46,7 +46,7 @@ const CourseTab = () => {
                 courseThumbnail: "",
             });
         }
-    }, [course]);
+    }, [courseByIdData]);
 
     const [previewThumbnail, setPreviewThumbnail] = useState("")
     
@@ -95,6 +95,8 @@ const CourseTab = () => {
             toast.error(error.data.message || "Failed to update course");
         }
     }, [isSuccess, error]);
+
+    if(courseByIdLoading) return <h1>Loading...</h1>
 
     return (
         <Card>
@@ -201,6 +203,7 @@ const CourseTab = () => {
                             <Input
                                 type="number"
                                 name="coursePrice"
+                                value={input.coursePrice}
                                 onChange={changeEventHandler}
                                 placeholder="199"
                                 className="w-fit"

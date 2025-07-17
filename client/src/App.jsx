@@ -11,56 +11,62 @@ import Dashboard from './pages/admin/Dashboard'
 import CourseTable from './pages/admin/course/CourseTable'
 import AddCourse from './pages/admin/course/AddCourse'
 import EditCourse from './pages/admin/course/EditCourse'
+import CreateLecture from './pages/admin/lecture/CreateLecture'
 const appRouter = createBrowserRouter([
   {
-    path:"/",
-    element:<MainLayout/>,
-    children:[
+    path: "/",
+    element: <MainLayout />,
+    children: [
       {
-        path:"/",
+        path: "/",
         element:
-        <>
-        <HeroSection />
-        <Courses />
-        </>
-        
-      },
-    {
-      path:"/login",
-      element:<Login />
-    },
-  {
-    path:"/my-learning",
-    element:<MyLearning/>
-  },
-  {
-    path:"/profile",
-    element:<Profile/>
-  },
-  // admin routes start from here
-  {
-    path: "admin",
-    element:<Sidebar/>,
-    children:[
-      {
-        path:"dashboard",
-        element:<Dashboard/>
+          <>
+            <HeroSection />
+            <Courses />
+          </>
+
       },
       {
-        path:"course",
-        element:<CourseTable/>
+        path: "/login",
+        element: <Login />
       },
       {
-         path:"course/create",
-         element:<AddCourse/>
+        path: "/my-learning",
+        element: <MyLearning />
       },
       {
-         path:"course/:courseId",
-         element:<EditCourse/>
+        path: "/profile",
+        element: <Profile />
       },
+      // admin routes start from here
+      {
+        path: "admin",
+        element: <Sidebar />,
+        children: [
+          {
+            path: "dashboard",
+            element: <Dashboard />
+          },
+          {
+            path: "course",
+            element: <CourseTable />
+          },
+          {
+            path: "course/create",
+            element: <AddCourse />
+          },
+          {
+            path: "course/:courseId",
+            element: <EditCourse />
+          },
+          {
+            path: "course/:courseId/lecture",
+            element: <CreateLecture/>
+          },
+        ]
+      }
     ]
   }
-]}
 ])
 
 
