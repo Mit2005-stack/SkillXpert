@@ -70,19 +70,19 @@ const LectureTab = () => {
                             onChange = {fileChangeHandler}
                             placeholder="Ex. Introduction to Javascript"
                         />
+                    {
+                        mediaProgress && (
+                            <div className='my-4'>
+                                <Progress value={uploadProgress}/>
+                                <p>{uploadProgress}% uploaded</p>
+                            </div>
+                        )
+                    }
                     </div>
                     <div className='flex items-center space-x-2 my-5'>
                         <Switch id="airplane-mode" />
                         <Label htmlFor="airplane-mode">Is this video FREE</Label>
                     </div>
-                    {
-                        mediaProgress && (
-                            <div className='my-4'>
-                                <Progress valeu={uploadProgress}/>
-                                <p>{uploadProgress}% uploaded</p>
-                            </div>
-                        )
-                    }
                     <div className='mt-4'>
                         <Button>Update Lecture</Button>
                     </div>
