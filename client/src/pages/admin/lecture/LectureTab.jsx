@@ -4,19 +4,25 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { Switch } from '@/components/ui/switch'
+import { useEditLectureMutation } from '@/features/api/courseApi'
 import axios from 'axios'
 import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
 const MEDIA_API="http://localhost:8080/api/v1/media"
 
 const LectureTab = () => {
-    const [title, setTitle] = useState("");
+    const [lectureTitle, setLectureTitle] = useState("");
     const [uploadVideoInfo, setUploadVideoInfo] = useState(null);
     const [isFree, setIsFree] = useState(false);
     const [mediaProgress, setMediaProgress] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [btnDisable, setBtnDisable] = useState(true);
+    const params = useParams();
+    const [courseId,lectureId] = params;
+
+    const [editLecture,{data, isLoading, error, isSuccess}] = useEditLectureMutation();
 
     const fileChangeHandler = async(e)=>{
         const file = e.target.files[0];
@@ -43,6 +49,20 @@ const LectureTab = () => {
             setMediaProgress(false);
         }
     }
+
+    const editLectureHandler = async() =>{
+        await editLecture({lectureTitle,uploadVideoInfo,isFree,courseId,lectureId})
+    }
+    
+    useEffect(()=>{
+        if(isSuccess){
+            toast.success(data.message);
+        }
+        if(error)
+        {
+            toast.error(error.data.message)
+        }
+    },[isSuccess,error])
 
     return (
         <>
@@ -84,7 +104,7 @@ const LectureTab = () => {
                         <Label htmlFor="airplane-mode">Is this video FREE</Label>
                     </div>
                     <div className='mt-4'>
-                        <Button>Update Lecture</Button>
+                        <Button onClick={editLectureHandler}>Update Lecture</Button>
                     </div>
                 </CardContent>
             </Card>
