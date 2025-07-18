@@ -6,11 +6,11 @@ import { Progress } from '@/components/ui/progress'
 import { Switch } from '@/components/ui/switch'
 import { useEditLectureMutation } from '@/features/api/courseApi'
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
-const MEDIA_API="http://localhost:8080/api/v1/media"
+const MEDIA_API = "http://localhost:8080/api/v1/media"
 
 const LectureTab = () => {
     const [lectureTitle, setLectureTitle] = useState("");
@@ -19,50 +19,58 @@ const LectureTab = () => {
     const [mediaProgress, setMediaProgress] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [btnDisable, setBtnDisable] = useState(true);
+
     const params = useParams();
-    const [courseId,lectureId] = params;
+    const { courseId, lectureId } = params;
+    console.log("check1 -->",lectureId);
 
-    const [editLecture,{data, isLoading, error, isSuccess}] = useEditLectureMutation();
+    const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation();
 
-    const fileChangeHandler = async(e)=>{
+    const fileChangeHandler = async (e) => {
         const file = e.target.files[0];
         const formData = new FormData();
         formData.append("file", file);
         setMediaProgress(true);
         try {
-            const res = await axios.post(`${MEDIA_API}/upload-video`, formData,{
-                onUploadProgress: ({loaded, total})=>{
-                    setUploadProgress(Math.round((loaded * 100)/total));
+            const res = await axios.post(`${MEDIA_API}/upload-video`, formData, {
+                onUploadProgress: ({ loaded, total }) => {
+                    setUploadProgress(Math.round((loaded * 100) / total));
                 }
             });
 
-            if(res.data.success){
+            if (res.data.success) {
                 console.log(res);
-                setUploadVideoInfo({videoUrl :res.data.data.url, publicId:res.data.data.public_id});
+                setUploadVideoInfo({ videoUrl: res.data.data.url, publicId: res.data.data.public_id });
                 setBtnDisable(false);
                 toast.success(res.data.message);
             }
         } catch (error) {
             console.log(error);
             toast.error("video upload failed")
-        }finally{
+        } finally {
             setMediaProgress(false);
         }
     }
-
-    const editLectureHandler = async() =>{
-        await editLecture({lectureTitle,uploadVideoInfo,isFree,courseId,lectureId})
-    }
     
-    useEffect(()=>{
-        if(isSuccess){
+    const editLectureHandler = async () => {
+        await editLecture({
+            lectureTitle,
+            videoInfo: uploadVideoInfo,
+            isPreviewFree: isFree,
+            courseId,
+            lectureId
+        })
+        console.log("check2 -->",lectureId);
+    }
+
+    useEffect(() => {
+        if (isSuccess) {
             toast.success(data.message);
         }
-        if(error)
-        {
+        if (error) {
             toast.error(error.data.message)
         }
-    },[isSuccess,error])
+    }, [isSuccess, error])
 
     return (
         <>
@@ -78,6 +86,8 @@ const LectureTab = () => {
                     <div>
                         <Label>Title</Label>
                         <Input className="mt-1"
+                            value={lectureTitle}
+                            onChange={(e) => setLectureTitle(e.target.value)}
                             type="text"
                             placeholder="Ex. Introduction to Javascript"
                         />
@@ -87,20 +97,23 @@ const LectureTab = () => {
                         <Input className="mt-1 w-fit"
                             type="file"
                             accept="video/*"
-                            onChange = {fileChangeHandler}
+                            onChange={fileChangeHandler}
                             placeholder="Ex. Introduction to Javascript"
                         />
-                    {
-                        mediaProgress && (
-                            <div className='my-4'>
-                                <Progress value={uploadProgress}/>
-                                <p>{uploadProgress}% uploaded</p>
-                            </div>
-                        )
-                    }
+                        {
+                            mediaProgress && (
+                                <div className='my-4'>
+                                    <Progress value={uploadProgress} />
+                                    <p>{uploadProgress}% uploaded</p>
+                                </div>
+                            )
+                        }
                     </div>
                     <div className='flex items-center space-x-2 my-5'>
-                        <Switch id="airplane-mode" />
+                        <Switch
+                            checked={isFree}
+                            onCheckedChange={setIsFree}
+                            id="airplane-mode" />
                         <Label htmlFor="airplane-mode">Is this video FREE</Label>
                     </div>
                     <div className='mt-4'>
