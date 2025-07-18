@@ -22,7 +22,6 @@ const LectureTab = () => {
 
     const params = useParams();
     const { courseId, lectureId } = params;
-    console.log("check1 -->",lectureId);
 
     const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation();
 
@@ -60,7 +59,6 @@ const LectureTab = () => {
             courseId,
             lectureId
         })
-        console.log("check2 -->",lectureId);
     }
 
     useEffect(() => {
