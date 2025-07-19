@@ -89,9 +89,11 @@ const CourseTab = () => {
     };
 
     const [publishCourse,{}] = usePublishCourseMutation();
+
     const publishStatusHandler = async(action)=>{
         try {
             const response = await publishCourse({courseId,query:action});
+
             if(response.data){
                 toast.success(response.data.message);
             }
@@ -110,7 +112,7 @@ const CourseTab = () => {
     }, [isSuccess, error]);
 
     if(courseByIdLoading) return <h1>Loading...</h1>
-
+    
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between">
