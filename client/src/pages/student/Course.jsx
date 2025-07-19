@@ -3,11 +3,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
 import { AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { Link } from 'react-router-dom'
 
 
 const Course = ({course}) => {
     return (
-        <Card className="overflow-hidden rounded-lg dark:bg-gray-800 bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Link to={`course-detail/${course._id}`}>
+        <Card className="overflow-hidden w-72 rounded-lg dark:bg-gray-800 bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
             <div className="relative">
                 <img
                     src={course.courseThumbnail}
@@ -33,11 +35,12 @@ const Course = ({course}) => {
                     </Badge>
                 </div>
                 <div className="text-lg font-bold">
-                    <span> {course.coursePrice}</span>
+                    <span>Rs. {course.coursePrice}</span>
                 </div>
 
             </CardContent>
         </Card>
+        </Link>
     )
 }
 
