@@ -4,7 +4,7 @@ const COURSE_API = "http://localhost:8080/api/v1/course"
 
 export const courseApi = createApi({
     reducerPath: 'courseApi',
-    tagTypes:['Refetch-Creator-Course '],
+    tagTypes:['Refetch_Creator_Course','Refetch_Lecture'],
     baseQuery: fetchBaseQuery({ baseUrl: COURSE_API, credentials: 'include' }),
     endpoints: (builder) => ({
         getAllCreatorCourses: builder.query({
@@ -12,7 +12,7 @@ export const courseApi = createApi({
                 url: '',
                 method: 'GET',
             }),
-            providesTags:['Refetch-Creator-Course']
+            providesTags:['Refetch_Creator_Course']
         }), 
 
         CreateCourse: builder.mutation({
@@ -21,7 +21,7 @@ export const courseApi = createApi({
                 method: 'POST',
                 body: { courseTitle, category },
             }),
-            invalidatesTags:['Refetch-Creator-Course']
+            invalidatesTags:['Refetch_Creator_Course']
         }),
 
         editCourse: builder.mutation({
@@ -30,7 +30,7 @@ export const courseApi = createApi({
                 method: 'PUT',
                 body: formData,
             }),
-            invalidatesTags:['Refetch-Creator-Course']
+            invalidatesTags:['Refetch_Creator_Course']
         }),
 
         getCourseById: builder.query({
@@ -53,7 +53,8 @@ export const courseApi = createApi({
                 url:`/${courseId}/lecture`,
                 method:"GET",
                
-            })
+            }),
+            providesTags:['Refetch_Lecture']
         }),
         editLecture: builder.mutation({
                 query:({lectureTitle, videoInfo, isPreviewFree, courseId, lectureId})=>({
@@ -62,6 +63,14 @@ export const courseApi = createApi({
                 body:{lectureTitle,videoInfo,isPreviewFree}
                 
             })
+        }),
+        removeLecture: builder.mutation({
+                query:(lectureId)=>({
+                url:`/lecture/${lectureId}`,
+                method:"DELETE",
+                
+            }),
+            invalidatesTags:['Refetch_Lecture']
         })
     }),
 });
@@ -73,6 +82,7 @@ export const
     useGetCourseByIdQuery, 
     useCreateLectureMutation, 
     useGetCourseLectureQuery, 
-    useEditLectureMutation 
+    useEditLectureMutation,
+    useRemoveLectureMutation
     
 } = courseApi;

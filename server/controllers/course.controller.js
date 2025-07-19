@@ -179,7 +179,7 @@ export const editLecture = async (req,res) =>{
 
         return res.status(200).json({
             lecture,
-            message:"Lecture edited successfully"
+            message:"Lecture updated successfully"
         });
         
     } catch (error) {

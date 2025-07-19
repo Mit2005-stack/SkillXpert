@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { Switch } from '@/components/ui/switch'
-import { useEditLectureMutation } from '@/features/api/courseApi'
+import { useEditLectureMutation, useRemoveLectureMutation } from '@/features/api/courseApi'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -24,6 +24,7 @@ const LectureTab = () => {
     const { courseId, lectureId } = params;
 
     const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation();
+    const [removeLecture,{data:removeData,isLoading:removeLoading,isSuccess:removeSuccess}]= useRemoveLectureMutation();
 
     const fileChangeHandler = async (e) => {
         const file = e.target.files[0];
@@ -60,6 +61,9 @@ const LectureTab = () => {
             lectureId
         })
     }
+    const removeLectureHandler=async()=>{
+        await removeLecture(lectureId);
+    }
 
     useEffect(() => {
         if (isSuccess) {
@@ -70,6 +74,12 @@ const LectureTab = () => {
         }
     }, [isSuccess, error])
 
+    useEffect(()=>{
+        if(removeSuccess){
+            toast.success(removeData.message)
+        }
+    },[removeSuccess])
+
     return (
         <>
             <Card>
@@ -77,7 +87,7 @@ const LectureTab = () => {
                     <div>
                         <CardTitle>Edit Lecture</CardTitle>
                         <CardDescription className="mt-1">Make Changes and click save when done.</CardDescription>
-                        <Button variant="destructive" className="mt-2">Remove Lecture</Button>
+                        <Button variant="destructive" className="mt-2" onClick={removeLectureHandler}>Remove Lecture</Button>
                     </div>
                 </CardHeader>
                 <CardContent>
