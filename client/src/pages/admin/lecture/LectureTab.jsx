@@ -4,8 +4,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { Switch } from '@/components/ui/switch'
-import { useEditLectureMutation, useRemoveLectureMutation } from '@/features/api/courseApi'
+import { useEditLectureMutation, useGetLectureByIdQuery, useRemoveLectureMutation } from '@/features/api/courseApi'
 import axios from 'axios'
+import { Loader, Loader2 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -24,7 +25,18 @@ const LectureTab = () => {
     const { courseId, lectureId } = params;
 
     const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation();
-    const [removeLecture,{data:removeData,isLoading:removeLoading,isSuccess:removeSuccess}]= useRemoveLectureMutation();
+    const [removeLecture, { data: removeData, isLoading: removeLoading, isSuccess: removeSuccess }] = useRemoveLectureMutation();
+    
+    const {data:lectureData} = useGetLectureByIdQuery(lectureId);
+    const lecture = lectureData?.lecture;
+
+    useEffect(()=>{
+            if(lecture){
+            setLectureTitle(lecture.lectureTitle);
+            setIsFree(lecture.isPreviewFree);
+            setUploadVideoInfo(lecture.videoInfo);
+        }
+    },[lecture])
 
     const fileChangeHandler = async (e) => {
         const file = e.target.files[0];
@@ -51,7 +63,7 @@ const LectureTab = () => {
             setMediaProgress(false);
         }
     }
-    
+
     const editLectureHandler = async () => {
         await editLecture({
             lectureTitle,
@@ -61,7 +73,7 @@ const LectureTab = () => {
             lectureId
         })
     }
-    const removeLectureHandler=async()=>{
+    const removeLectureHandler = async () => {
         await removeLecture(lectureId);
     }
 
@@ -74,11 +86,11 @@ const LectureTab = () => {
         }
     }, [isSuccess, error])
 
-    useEffect(()=>{
-        if(removeSuccess){
+    useEffect(() => {
+        if (removeSuccess) {
             toast.success(removeData.message)
         }
-    },[removeSuccess])
+    }, [removeSuccess])
 
     return (
         <>
@@ -87,7 +99,13 @@ const LectureTab = () => {
                     <div>
                         <CardTitle>Edit Lecture</CardTitle>
                         <CardDescription className="mt-1">Make Changes and click save when done.</CardDescription>
-                        <Button variant="destructive" className="mt-2" onClick={removeLectureHandler}>Remove Lecture</Button>
+                        <Button disabled={removeLoading} variant="destructive" className="mt-2" onClick={removeLectureHandler}>
+                            {
+                                removeLoading ? <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Please wait </> : "Remove Lecture"
+                            }
+                        </Button>
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -125,7 +143,11 @@ const LectureTab = () => {
                         <Label htmlFor="airplane-mode">Is this video FREE</Label>
                     </div>
                     <div className='mt-4'>
-                        <Button onClick={editLectureHandler}>Update Lecture</Button>
+                        <Button disabled={isLoading} onClick={editLectureHandler}>
+                            {
+                                isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Please wait</> : "Update Lecture"
+                            }
+                        </Button>
                     </div>
                 </CardContent>
             </Card>
