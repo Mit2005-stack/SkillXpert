@@ -15,7 +15,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEditCourseMutation, useGetCourseByIdQuery } from '@/features/api/courseApi';
+import { useEditCourseMutation, useGetCourseByIdQuery, usePublishCourseMutation } from '@/features/api/courseApi';
 import { toast } from 'sonner';
 
 
@@ -73,7 +73,7 @@ const CourseTab = () => {
     const navigate = useNavigate();
     
     const [editCourse, { data, isLoading, isSuccess, error }] = useEditCourseMutation();
-    const isPublished = true;
+    // const isPublished = true;
     // const isLoading = false;
     const updateCourseHandler = async () => {
         // console.log(input);
@@ -86,6 +86,19 @@ const CourseTab = () => {
         formData.append("coursePrice", input.coursePrice);
         formData.append("courseThumbnail", input.courseThumbnail);
         await editCourse({formData, courseId});
+    };
+
+    const [publishCourse,{}] = usePublishCourseMutation();
+    const publishStatusHandler = async(action)=>{
+        try {
+            const response = await publishCourse({courseId,query:action});
+            if(response.data){
+                toast.success(response.data.message);
+            }
+            
+        } catch (error) {
+            toast.error("Failed to publish or unpublish course");
+        }
     }
     useEffect(() => {
         if (isSuccess) {
@@ -110,9 +123,9 @@ const CourseTab = () => {
                     </CardDescription>
                 </div>
                 <div className='space-x-2'>
-                    <Button variant="outline">
+                    <Button variant="outline" onClick={()=>publishStatusHandler(courseByIdData?.course.isPublished? "false" : "true")}>
                         {
-                            isPublished ? "Unpublished" : "Publish"
+                            courseByIdData?.course.isPublished? "Unpublished" : "Publish"
                         }
                     </Button>
                     <Button>
