@@ -60,7 +60,10 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto hidden md:flex items-center justify-between h-full gap-10 px-4">
         <div className='flex items-center gap-2'>
           <School size={"30"} />
-          <h1 className="hidden md:block font-extrabold text-2xl">BrightPath</h1>
+          <Link to="/">
+            <h1 className="hidden md:block font-extrabold text-2xl">BrightPath</h1>
+          </Link>
+          
         </div>
         <div className='flex items-center gap-5'>
           {user ? (
