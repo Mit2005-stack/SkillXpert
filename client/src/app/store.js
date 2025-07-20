@@ -3,10 +3,11 @@ import authReducer from "@/features/authslice";
 import rootReducer from "./rootReducer";
 import { authApi } from "@/features/api/authApi";
 import { courseApi } from "@/features/api/courseApi";
+import { purchaseApi } from "@/features/api/purchaseApi";
 export const appstore = configureStore({
   reducer: rootReducer, // <-- Add comma here
   middleware: (defaultMiddleware) =>
-    defaultMiddleware().concat(authApi.middleware, courseApi.middleware),
+    defaultMiddleware().concat(authApi.middleware, courseApi.middleware,purchaseApi.middleware),
   });
 
   const initializeApp = async() => {

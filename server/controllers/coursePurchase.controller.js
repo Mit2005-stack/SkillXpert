@@ -8,6 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createCheckoutSession = async(req,res)=>{
     try {
+        console.log("called to creatCheckoutSession controller in beckend")
         const userId = req.id;
         const {courseId} = req.body;
 
@@ -66,11 +67,11 @@ export const createCheckoutSession = async(req,res)=>{
         console.log(error)
     }
 };
-export const webhook = async (req, res) => {
+export const stripeWebhook = async (req, res) => {
     let event;
     try {
         const payloadString = JSON.stringify(req.body, null, 2);
-        const secure_url = process.env.WEBHOOK_ENDPOINT_SECRET;
+        const secret = process.env.WEBHOOK_ENDPOINT_SECRET;
 
         const header = stripe.webhooks.generateTestHeaderString({
             payload: payloadString,
@@ -94,6 +95,7 @@ export const webhook = async (req, res) => {
                 purchase.amount = session.amount_total / 100; // Convert from paise to rupees
             }
             purchase.status = "completed";
+
             //Make all lectures visible by setting `isPreviewFree` to true
             if(purchase.courseId &&purchase.courseId.lectures.length > 0) {
                 await Lecture.updateMany(
@@ -102,12 +104,21 @@ export const webhook = async (req, res) => {
                 );
             }
             await purchase.save();
+
             // Update user's enrolled courses
-            await Course.findByIdAndUpdate(
+            await User.findByIdAndUpdate(
+                purchase.userId,
+                { $addToSet: { enrolledcourses : purchase.courseId._id} },//Add userid to enrolled courses
+                { new: true }
+            );
+
+            //Update course to add user ID to enrolledStudents
+            await User.findByIdAndUpdate(
                 purchase.courseId._id,
                 { $addToSet: { enrolledcourses : purchase.userId } },//Add userid to enrolled courses
                 { new: true }
             );
+
         } catch (error) {
             console.error("Error handling event:", error);
             return res.status(500).json({ message: 'Internal Server Error' });

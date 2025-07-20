@@ -6,7 +6,7 @@ import connectDB from './database/db.js';
 import cors from 'cors';
 import courseRoute from './route/course.route.js';
 import mediaRoute from './route/media.route.js';
-
+import purchaseRoute from './route/purchaseCourse.route.js'
 dotenv.config({});
 
 connectDB();
@@ -27,6 +27,7 @@ app.use(cors({
 app.use("/api/v1/media", mediaRoute );
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
+app.use("api/v1/purchase",purchaseRoute)
 
 app.get("/home", (_, res) => {
   res.status(200).json({
