@@ -1,3 +1,4 @@
+// stripe listen --forward-to http://localhost:8080/api/v1/purchase/webhook
 import express from 'express';
 import dotenv from 'dotenv';
 import userRoute from './route/user.route.js';
@@ -27,7 +28,7 @@ app.use(cors({
 app.use("/api/v1/media", mediaRoute );
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
-app.use("api/v1/purchase",purchaseRoute)
+app.use("/api/v1/purchase",purchaseRoute)
 
 app.get("/home", (_, res) => {
   res.status(200).json({

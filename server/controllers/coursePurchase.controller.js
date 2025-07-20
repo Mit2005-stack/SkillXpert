@@ -2,13 +2,12 @@ import Stripe from "stripe"
 import {Course} from "../model/course.model.js"
 import {CoursePurchase} from "../model/coursePurchase.model.js"
 import { Lecture } from "../model/lecture.model.js";
-
+import User from "../model/user.model.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createCheckoutSession = async(req,res)=>{
     try {
-        console.log("called to creatCheckoutSession controller in beckend")
         const userId = req.id;
         const {courseId} = req.body;
 
