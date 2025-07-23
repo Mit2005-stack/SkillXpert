@@ -107,14 +107,14 @@ export const stripeWebhook = async (req, res) => {
             // Update user's enrolled courses
             await User.findByIdAndUpdate(
                 purchase.userId,
-                { $addToSet: { enrolledcourses : purchase.courseId._id} },//Add userid to enrolled courses
+                { $addToSet: { enrolledCourses : purchase.courseId._id} },//Add userid to enrolled courses
                 { new: true }
             );
 
             //Update course to add user ID to enrolledStudents
             await User.findByIdAndUpdate(
                 purchase.courseId._id,
-                { $addToSet: { enrolledcourses : purchase.userId } },//Add userid to enrolled courses
+                { $addToSet: { enrolledCourses : purchase.userId } },//Add userid to enrolled courses
                 { new: true }
             );
 
